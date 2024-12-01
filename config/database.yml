@@ -1,90 +1,23 @@
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
-#
-default: &default
-  adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-
-development:
-  <<: *default
-  database: storage/development.sqlite3
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: storage/test.sqlite3
-
-
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
-production:
-  primary:
-    <<: *default
-    database: storage/production.sqlite3
-  cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
-
-
-# mysql2
-default: &default
-  adapter: mysql2
-  encoding: utf8
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
-  #database: task_manager_development
-  #username: root
-  #password: cifd#713mysqL
-
-test:
-  <<: *default
-  #database: task_manager_test
-  #username: root
-  #password: cifd#713mysqL
-
-production:
-  <<: *default
-  #database: task_manager_production
-  #username: root
-  #password: <%= ENV['DATABASE_PASSWORD'] %>
-
-# pg
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: postgres
-  password: cifd#713pstgrsql
+  host: <%= ENV.fetch("DB_HOST") { 'localhost' } %>
+  username: <%= ENV.fetch("DB_USERNAME") { 'postgres' } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { 'password' } %>
+  database: <%= ENV.fetch("DB_NAME") { 'task_manager_development' } %>
 
 development:
   <<: *default
-  database: task_manager_db_dev
+  database: task_manager_development
 
 test:
   <<: *default
-  database: task_manager_db_test
+  database: task_manager_test
 
 production:
   <<: *default
-  database: task_manager_db_prod
-  username: postgres
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-
-
+  database: <%= ENV.fetch("DB_NAME") %>
+  host: <%= ENV.fetch("DB_HOST") %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
